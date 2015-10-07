@@ -1,6 +1,7 @@
 <?php
+namespace ha;
 
-class Base extends Tonic\Resource
+class Base extends \Tonic\Resource
 {
 
     protected function getRel($name)

@@ -1,9 +1,10 @@
 <?php
+namespace ha;
 
 /**
  *  @uri /temp/
  */
-class Temp extends Tonic\Resource
+class Temp extends \Tonic\Resource
 {
 
     /**
