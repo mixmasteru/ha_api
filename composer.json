@@ -6,8 +6,8 @@
         "nocarrier/hal": "dev-master"
     },
     "autoload": {
-        "psr-0": {
-            "Acme": "src/"
+        "psr-4": {
+            "ha\\": "src/"
         }
     }
 }
