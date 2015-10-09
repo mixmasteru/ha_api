@@ -2,14 +2,13 @@
 // autoloader
 require_once '../vendor/autoload.php';
 
+use ha\Exception\Base as BaseException;
+
 $config = array(
     'load' => array('../src/*.php') // load resources
 );
 
 $app = new Tonic\Application($config);
-
-#echo "<pre>";
-#var_dump($app);die;
 
 // set up the container
 $container = new Pimple();
@@ -26,24 +25,23 @@ $request = new Tonic\Request(array(
 ));
 
 try {
-
     $resource = $app->getResource($request);
-
     $resource->container = $container; // attach container to loaded resource
-
     $response = $resource->exec();
-
-} catch (Tonic\NotFoundException $e) {
+}
+catch (Tonic\NotFoundException $e) {
     $response = new Tonic\Response(404, 'Not found');
-
-} catch (Tonic\UnauthorizedException $e) {
+}
+catch (Tonic\UnauthorizedException $e) {
     $response = new Tonic\Response(401, 'Unauthorized');
     $response->wwwAuthenticate = 'Basic realm="My Realm"';
-
-} catch (Tonic\Exception $e) {
-    $response = new Tonic\Response(500, 'Server error');
 }
-
+catch (Tonic\Exception $e) {
+    $response = new Tonic\Response(Tonic\Response::INTERNALSERVERERROR, 'Server error');
+} 
+catch (BaseException $e) {
+	$response = new Tonic\Response(Tonic\Response::INTERNALSERVERERROR,$e->getMessage().":".PHP_EOL.$e->getTraceAsString());
+}
 #$response->contentType = 'text/plain';
 
 $response->output();

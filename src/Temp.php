@@ -7,9 +7,12 @@ use Tonic\NotAcceptableException;
  *  @uri /temp/:date/
  *  @uri /temp/:date/:temp/
  */
-class Temp extends \Tonic\Resource
+class Temp extends BaseResource
 {
-
+	
+	protected $db_name = "db";
+	protected $table 	= "table1";
+	
     /**
      * @method get
      */
@@ -24,7 +27,8 @@ class Temp extends \Tonic\Resource
      */
     function save($date,$temp)
     {
-        return json_encode(array($date => $temp));
+        $this->getDB($this->db_name);
+    	return json_encode(array($date => $temp));
     }
 
 }
