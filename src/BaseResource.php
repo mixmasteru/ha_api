@@ -25,7 +25,8 @@ class BaseResource extends \Tonic\Resource
     protected function getDB($database)
     {
     	$dsn = sprintf($this->container['db_config']['dsn'], $database);
-    	try {
+    	try
+		{
     		return new \PDO($dsn, $this->container['db_config']['username'], $this->container['db_config']['password']);
     	} catch (\Exception $e) {
     		throw new DatabaseException("db error", 0, $e);

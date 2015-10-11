@@ -40,7 +40,8 @@ catch (Tonic\Exception $e) {
     $response = new Tonic\Response(Tonic\Response::INTERNALSERVERERROR, 'Server error');
 } 
 catch (BaseException $e) {
-	$response = new Tonic\Response(Tonic\Response::INTERNALSERVERERROR,$e->getMessage().":".PHP_EOL.$e->getTraceAsString());
+    $response = new Tonic\Response(Tonic\Response::INTERNALSERVERERROR,$e->getAsJson());
+    $response->contentType = 'application/json';
 }
 #$response->contentType = 'text/plain';
 

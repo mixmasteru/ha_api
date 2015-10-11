@@ -27,8 +27,24 @@ class Temp extends BaseResource
      */
     function save($date,$temp)
     {
-        $this->getDB($this->db_name);
     	return json_encode(array($date => $temp));
+    }
+
+    /**
+     * @param $date
+     * @param $temp
+     * @throws Exception\Database
+     */
+    protected function addTempToDb($date,$temp)
+    {
+        $db = $this->getDB($this->db_name);
+        $sql = "INSERT INTO `d016dba7`.`room_stats` (`id`, `room`, `type`, `value`, `ts`)
+                VALUES (NULL, :room, :type, :temp, :date);";
+        $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $sth->execute(array(':room' => 1,
+                            ':type' => 1,
+                            ':temp' => $temp,
+                            ':date' => $date));
     }
 
 }
