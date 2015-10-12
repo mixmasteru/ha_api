@@ -13,9 +13,9 @@ $app = new Tonic\Application($config);
 // set up the container
 $container = new Pimple();
 $container['db_config'] = array(
-    'dsn' => 'mysql:host=localhost;dbname=%s',
-    'username' => 'root',
-    'password' => ''
+    'dsn' => 'mysql:host=host;dbname=dbname',
+    'username' => 'user',
+    'password' => 'pwd'
 );
 
 $request = new Tonic\Request(array(
@@ -28,9 +28,10 @@ try {
     $resource = $app->getResource($request);
     $resource->container = $container; // attach container to loaded resource
     $response = $resource->exec();
+    $response->contentType = 'application/json';
 }
 catch (Tonic\NotFoundException $e) {
-    $response = new Tonic\Response(404, 'Not found');
+    $response = new Tonic\Response($e->getCode(), $e->getMessage());
 }
 catch (Tonic\UnauthorizedException $e) {
     $response = new Tonic\Response(401, 'Unauthorized');
@@ -43,6 +44,5 @@ catch (BaseException $e) {
     $response = new Tonic\Response(Tonic\Response::INTERNALSERVERERROR,$e->getAsJson());
     $response->contentType = 'application/json';
 }
-#$response->contentType = 'text/plain';
 
 $response->output();

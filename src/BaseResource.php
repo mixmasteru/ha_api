@@ -2,6 +2,7 @@
 namespace ha;
 
 use ha\Exception\Database as DatabaseException;
+use ha\Exception\Parameter as ParameterException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,21 +16,39 @@ class BaseResource extends \Tonic\Resource
      * @var Pimple
      */
     public $container;
-    
-    /**
-     * 
-     * @param string $database
-     * @throws Tonic\NotFoundException
-     * @return \PDO
-     */
-    protected function getDB($database)
+
+	/**
+	 * @return \PDO
+	 * @throws DatabaseException
+	 */
+    protected function getDB()
     {
-    	$dsn = sprintf($this->container['db_config']['dsn'], $database);
+    	$dsn = $this->container['db_config']['dsn'];
+
     	try
 		{
-    		return new \PDO($dsn, $this->container['db_config']['username'], $this->container['db_config']['password']);
+			return new \PDO($dsn, $this->container['db_config']['username'], $this->container['db_config']['password']);
     	} catch (\Exception $e) {
-    		throw new DatabaseException("db error", 0, $e);
+    		throw new DatabaseException("db error:".$e->getMessage(), 0, $e);
     	}
     }
+
+	/**
+	 * @param $date_to_check
+	 * @return \DateTime
+	 * @throws ParameterException
+	 */
+	protected function checkDate($date_to_check){
+
+		$date = \DateTime::createFromFormat("Ymd-his", $date_to_check);
+
+		if($date === false || array_sum($date->getLastErrors()) > 0)
+		{
+			var_dump($date);
+			var_dump($date_to_check);die;
+			throw new ParameterException("no valid date: ".$date_to_check,0);
+		}
+
+		return $date;
+	}
 }
