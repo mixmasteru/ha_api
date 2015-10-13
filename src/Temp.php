@@ -6,20 +6,27 @@ use PDO;
 use Tonic\NotFoundException;
 
 /**
- *  @uri /temp/:date/
- *  @uri /temp/:date/:temp/
+ *  @uri /temp/:location/:date/
+ *  @uri /temp/:location/:date/:temp/
  */
 class Temp extends BaseResource
 {
-	protected $table = "room_stats";
-	
+	protected $table = "location_stats";
+
     /**
      * @method get
+     *
+     * @param $date
+     * @param $location
+     * @return string
+     * @throws DatabaseException
+     * @throws Exception\Parameter
+     * @throws NotFoundException
      */
-    function read($date)
+    function read($location,$date)
     {
         $date = $this->checkDate($date);
-        $arr_data = $this->readTempFromDb($date);
+        $arr_data = $this->readTempFromDb($location, $date);
         if(!empty($arr_data)) {
             return json_encode($arr_data);
         }else{
@@ -28,17 +35,23 @@ class Temp extends BaseResource
     }
 
     /**
+     * @param int $location
      * @param \DateTime $date
      * @return array
      * @throws DatabaseException
      */
-    protected function readTempFromDb(\DateTime $date)
+    protected function readTempFromDb($location, \DateTime $date)
     {
         $db = $this->getDB();
-        $sql = "SELECT ts AS date, value AS temp FROM `room_stats` WHERE `ts` = :date AND type = :type";
+        $sql = "SELECT location, ts AS date, value AS temp FROM ".$this->table."
+                WHERE ts = :date
+                AND location = :location
+                AND type = :type";
         try {
             $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-            $sth->execute(array(':date' => $date->format("Y-m-d h:i:s"),':type' => DataTypes::DB_TEMP));
+            $sth->execute(array(':location' => $location,
+                                ':date'     => $date->format("Y-m-d h:i:s"),
+                                ':type'     => DataTypes::DB_TEMP));
             $result = $sth->fetchAll(PDO::FETCH_ASSOC);
             return $result;
         } catch (Exception $e) {
@@ -48,35 +61,38 @@ class Temp extends BaseResource
 
     /**
      * @method put
-     * @param $date
-     * @param $temp
+     *
+     * @param int $location
+     * @param string $date
+     * @param float $temp
      * @return string
      * @throws DatabaseException
      * @throws Exception\Parameter
      */
-    function save($date,$temp)
+    function save($location,$date,$temp)
     {
         $date = $this->checkDate($date);
-        $this->addTempToDb($date,$temp);
+        $this->addTempToDb($location,$date,$temp);
         return json_encode(array($date->format("Y-m-d h:i:s") => $temp));
     }
 
     /**
+     * @param $location
      * @param \DateTime $date
      * @param $temp
      * @throws DatabaseException
      */
-    protected function addTempToDb(\DateTime $date, $temp)
+    protected function addTempToDb($location, \DateTime $date, $temp)
     {
         $db = $this->getDB();
-        $sql = "INSERT INTO `room_stats` (`id`, `room`, `type`, `value`, `ts`)
-                VALUES (NULL, :room, :type, :temp, :date);";
+        $sql = "INSERT INTO ".$this->table." (`id`, `location`, `type`, `value`, `ts`)
+                VALUES (NULL, :location, :type, :temp, :date);";
         try {
             $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-            $sth->execute(array(':room' => 1,
-                ':type' => 1,
-                ':temp' => $temp,
-                ':date' => $date->format("Y-m-d h:i:s")));
+            $sth->execute(array(':location' => $location,
+                                ':type' => DataTypes::DB_TEMP,
+                                ':temp' => $temp,
+                                ':date' => $date->format("Y-m-d h:i:s")));
         } catch (Exception $e) {
             throw new DatabaseException("insert error:" . $e->getMessage(), 0, $e);
         }
