@@ -1,7 +1,6 @@
 <?php
 namespace ha;
 use ha\Exception\Database as DatabaseException;
-use Tonic\Exception;
 use PDO;
 use Tonic\NotFoundException;
 
@@ -43,20 +42,18 @@ class Temp extends BaseResource
     protected function readTempFromDb($location, \DateTime $date)
     {
         $db = $this->getDB();
-        $sql = "SELECT location, ts AS date, value AS temp FROM ".$this->table."
+        $sql = "SELECT location, ts AS date, value AS temp d FROM ".$this->table."
                 WHERE ts = :date
                 AND location = :location
                 AND type = :type";
-        try {
-            $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-            $sth->execute(array(':location' => $location,
-                                ':date'     => $date->format("Y-m-d h:i:s"),
-                                ':type'     => DataTypes::DB_TEMP));
-            $result = $sth->fetchAll(PDO::FETCH_ASSOC);
-            return $result;
-        } catch (Exception $e) {
-            throw new DatabaseException("read error:" . $e->getMessage(), 0, $e);
-        }
+
+        $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $sth->execute(array(':location' => $location,
+                            ':date'     => $date->format("Y-m-d h:i:s"),
+                            ':type'     => DataTypes::DB_TEMP));
+        $this->checkForError($sth);
+        $result = $sth->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
     }
 
     /**
@@ -87,15 +84,13 @@ class Temp extends BaseResource
         $db = $this->getDB();
         $sql = "INSERT INTO ".$this->table." (`id`, `location`, `type`, `value`, `ts`)
                 VALUES (NULL, :location, :type, :temp, :date);";
-        try {
-            $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-            $sth->execute(array(':location' => $location,
-                                ':type' => DataTypes::DB_TEMP,
-                                ':temp' => $temp,
-                                ':date' => $date->format("Y-m-d h:i:s")));
-        } catch (Exception $e) {
-            throw new DatabaseException("insert error:" . $e->getMessage(), 0, $e);
-        }
+        $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $sth->execute(array(':location' => $location,
+                            ':type' => DataTypes::DB_TEMP,
+                            ':temp' => $temp,
+                            ':date' => $date->format("Y-m-d h:i:s")));
+
+        $this->checkForError($sth);
     }
 
 }

@@ -8,8 +8,25 @@ class Base extends \Exception
         parent::__construct($message, $code, $previous);
     }
 
+    /**
+     * json representation of exception
+     *
+     * @return string
+     */
     public function getAsJson()
     {
-        return json_encode(array("msg" => $this->getMessage() ,"trace" => $this->getTrace()));
+        return json_encode(array("exception" => self::whoAmI(),
+                                "msg" => $this->getMessage() ,
+                                "trace" => $this->getTrace()));
+    }
+
+    /**
+     * returns class name of exception instance
+     *
+     * @return string
+     */
+    protected static function whoAmI()
+    {
+        return get_called_class();
     }
 }

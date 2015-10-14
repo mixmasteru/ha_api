@@ -2,6 +2,7 @@
 namespace ha;
 
 use ha\Exception\Database as DatabaseException;
+use ha\Exception\SQL as SQLException;
 use ha\Exception\Parameter as ParameterException;
 
 /**
@@ -44,11 +45,22 @@ class BaseResource extends \Tonic\Resource
 
 		if($date === false || array_sum($date->getLastErrors()) > 0)
 		{
-			var_dump($date);
-			var_dump($date_to_check);die;
 			throw new ParameterException("no valid date: ".$date_to_check,0);
 		}
 
 		return $date;
+	}
+
+	/**
+	 * @param \PDOStatement $statement
+	 * @throws SQLException
+	 */
+	protected function checkForError(\PDOStatement $statement)
+	{
+		if($statement->errorCode() !== '00000')
+		{
+			$arr_error = $statement->errorInfo();
+			throw new SQLException($arr_error[2],$statement->errorCode());
+		}
 	}
 }
