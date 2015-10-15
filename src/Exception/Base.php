@@ -15,7 +15,7 @@ class Base extends \Exception
      */
     public function getAsJson()
     {
-        return json_encode(array("exception" => self::whoAmI(),
+        return json_encode(array("exception" => $this->whoAmI(),
                                 "msg" => $this->getMessage() ,
                                 "trace" => $this->getTrace()));
     }
@@ -25,8 +25,8 @@ class Base extends \Exception
      *
      * @return string
      */
-    protected static function whoAmI()
+    protected function whoAmI()
     {
-        return get_called_class();
+        return get_class($this);
     }
 }

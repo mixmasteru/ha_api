@@ -24,8 +24,10 @@ class Temp extends BaseResource
      */
     function read($location,$date)
     {
-        $date = $this->checkDate($date);
+        $location = $this->validator->checkParam($location,'location', FILTER_VALIDATE_INT);
+        $date = $this->validator->checkDate($date);
         $arr_data = $this->readTempFromDb($location, $date);
+
         if(!empty($arr_data)) {
             return json_encode($arr_data);
         }else{
@@ -42,7 +44,7 @@ class Temp extends BaseResource
     protected function readTempFromDb($location, \DateTime $date)
     {
         $db = $this->getDB();
-        $sql = "SELECT location, ts AS date, value AS temp d FROM ".$this->table."
+        $sql = "SELECT location, ts AS date, value AS temp FROM ".$this->table."
                 WHERE ts = :date
                 AND location = :location
                 AND type = :type";
@@ -68,7 +70,7 @@ class Temp extends BaseResource
      */
     function save($location,$date,$temp)
     {
-        $date = $this->checkDate($date);
+        $date = $this->validator->checkDate($date);
         $this->addTempToDb($location,$date,$temp);
         return json_encode(array($date->format("Y-m-d h:i:s") => $temp));
     }
@@ -82,7 +84,7 @@ class Temp extends BaseResource
     protected function addTempToDb($location, \DateTime $date, $temp)
     {
         $db = $this->getDB();
-        $sql = "INSERT INTO ".$this->table." (`id`, `location`, `type`, `value`, `ts`)
+        $sql = "INSERT INTO ".$this->table." (id, location, type, value, ts)
                 VALUES (NULL, :location, :type, :temp, :date);";
         $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $sth->execute(array(':location' => $location,

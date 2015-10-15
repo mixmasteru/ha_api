@@ -13,9 +13,9 @@ $app = new Tonic\Application($config);
 // set up the container
 $container = new Pimple();
 $container['db_config'] = array(
-    'dsn' => 'mysql:host=host;dbname=dbname',
-    'username' => 'user',
-    'password' => 'pwd'
+    'dsn' => 'mysql:host=;dbname=',
+    'username' => '',
+    'password' => ''
 );
 
 $request = new Tonic\Request(array(
@@ -44,5 +44,9 @@ catch (BaseException $e) {
     $response = new Tonic\Response(Tonic\Response::INTERNALSERVERERROR,$e->getAsJson());
     $response->contentType = 'application/json';
 }
-
+catch (\Exception $e) {
+    $msg = 'Server error: '.get_class($e).' '.$e->getMessage();
+    $response = new Tonic\Response(Tonic\Response::INTERNALSERVERERROR, $msg);
+    $response->contentType = 'text/plain';
+}
 $response->output();
