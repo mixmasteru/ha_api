@@ -31,7 +31,7 @@ class Validator
      */
     public function checkDate($date_to_check){
 
-        $date = \DateTime::createFromFormat("Ymd-his", $date_to_check);
+        $date = \DateTime::createFromFormat("Ymd-His", $date_to_check);
 
         if($date === false || array_sum($date->getLastErrors()) > 0)
         {
