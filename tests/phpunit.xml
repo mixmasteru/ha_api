@@ -4,7 +4,7 @@
 
     <testsuites>
         <testsuite name="ha test suite">
-            <directory>./tests</directory>
+            <directory>./</directory>
         </testsuite>11
     </testsuites>
 
