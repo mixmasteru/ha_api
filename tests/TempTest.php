@@ -36,11 +36,12 @@ class TempTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function testGET()
+    public function testGET404()
     {
-        $request = $this->client->get('/temp/101/');
+        $request = $this->client->get('/temp/1/20151201-100000/');
         $response = $request->send();
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals('The server has not found anything matching the Request-URI', $response->getBody());
     }
 }
