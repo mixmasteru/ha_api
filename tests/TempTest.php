@@ -34,7 +34,7 @@ class TempTest extends BaseTest
         $request = $this->client->get('/temp/1/20151201-100000/');
         $response = $request->send();
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(404, $response->getStatusCode(),"wrong response: ".$request->getResponse());
         $this->assertEquals('The server has not found anything matching the Request-URI', $response->getBody());
     }
 }
