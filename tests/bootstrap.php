@@ -22,6 +22,8 @@ $command = sprintf(
 $output = array();
 exec($command, $output);
 $pid = (int) $output[0];
+//time for start server
+sleep(3);
 
 echo sprintf(
         '%s - Web server started on %s:%d with PID %d',

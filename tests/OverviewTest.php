@@ -4,7 +4,7 @@ namespace ha;
 
 class OverviewTest extends BaseTest
 {
-    public function testGET404()
+    public function testOverview()
     {
         $request = $this->client->get('/');
         $response = $request->send();
