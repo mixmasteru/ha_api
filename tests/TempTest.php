@@ -12,10 +12,10 @@ use Guzzle\Http\Client;
 
 /**
  * Class TempTest
- * php server has to run on port 8888 for tests
+ *
  * @package ha
  */
-class TempTest extends \PHPUnit_Framework_TestCase
+class TempTest extends BaseTest
 {
 
     /**
@@ -26,13 +26,6 @@ class TempTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
-
-        // create our http client (Guzzle)
-        $this->client = new Client('http://localhost:8888', array(
-            'request.options' => array(
-                'exceptions' => false,
-            )
-        ));
     }
 
 

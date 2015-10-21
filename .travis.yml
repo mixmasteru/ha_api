@@ -9,5 +9,4 @@ install:
 before_script:
 
 script:
-  - nohup php -S 0.0.0.0:8888 -ddisplay_errors=0 -t web/ web/dispatch.php >/dev/null 2>&1 &
   - phpunit -c tests/phpunit.xml
