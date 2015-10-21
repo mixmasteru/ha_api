@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <phpunit bootstrap="bootstrap.php"
-        colors="true">
+         colors="true"
+         strict="false">
 
     <testsuites>
         <testsuite name="ha test suite">
