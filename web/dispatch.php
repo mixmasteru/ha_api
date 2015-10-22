@@ -13,9 +13,9 @@ $app = new Tonic\Application($config);
 // set up the container
 $container = new Pimple();
 $container['db_config'] = array(
-    'dsn' => 'mysql:host=;dbname=',
-    'username' => '',
-    'password' => ''
+    'dsn' => 'mysql:host=#host#;dbname=#dbname#',
+    'username' => '#dbuser#',
+    'password' => '#dbpwd#'
 );
 
 $request = new Tonic\Request(array(

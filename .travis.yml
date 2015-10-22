@@ -10,6 +10,10 @@ before_script:
   #db setup
   - mysql -e 'create database ha_api_unittest;'
   - mysql -u root --database=ha_api_unittest < sql/init.sql
+  - sed -i -- 's/#host#/127.0.0.1/g' web/dispatch.php
+  - sed -i -- 's/#dbname#/ha_api_unittest/g' web/dispatch.php
+  - sed -i -- 's/#dbuser#/travis/g' web/dispatch.php
+  - sed -i -- 's/#dbpwd#//g' web/dispatch.php
 
 script:
   - phpunit -c tests/phpunit.xml
