@@ -7,6 +7,9 @@ install:
   - composer install
 
 before_script:
+  #db setup
+  - mysql -e 'create database ha_api_unittest;'
+  - mysql -u root --database=ha_api_unittest < sql/init.sql
 
 script:
   - phpunit -c tests/phpunit.xml
