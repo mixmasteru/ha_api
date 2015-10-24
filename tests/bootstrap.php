@@ -8,7 +8,6 @@
 
 include_once('./vendor/autoload.php');
 
-
 // Command that starts the built-in web server
 $command = sprintf(
     'php -S %s:%d -t %s %s >/dev/null 2>&1 & echo $!',
@@ -35,6 +34,7 @@ echo sprintf(
 
 // Kill the web server when the process ends
 register_shutdown_function(function() use ($pid) {
+
     echo sprintf('%s - Killing process with ID %d', date('r'), $pid) . PHP_EOL;
     exec('kill ' . $pid);
 });

@@ -7,10 +7,10 @@
 // autoloader
 require_once './vendor/autoload.php';
 
-//only works for one call
+//get stored coverage obj
 $coverage = new PHP_CodeCoverage();
 $coverage->filter()->addDirectoryToWhitelist('./src/');
-$coverage->start('Site coverage');
+$coverage->start("coverage");
 
 require_once 'dispatch.php';
 

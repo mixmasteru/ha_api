@@ -10,6 +10,6 @@ class OverviewTest extends BaseTest
         $response = $request->send();
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(json_encode(array("welcome")), $response->getBody());
+        $this->assertEquals(json_encode(array("welcome")), $response->getBody(),"error: ".$response->getBody());
     }
 }
