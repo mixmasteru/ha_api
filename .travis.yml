@@ -17,3 +17,4 @@ before_script:
 
 script:
   - phpunit -c tests/phpunit.xml
+  - php vendor/bin/coveralls -v

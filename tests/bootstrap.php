@@ -57,6 +57,6 @@ register_shutdown_function(function() use ($pid) {
     $writer = new PHP_CodeCoverage_Report_HTML(35, 70);
     $writer->process($codeCoverage, 'coverage');
     $writer = new PHP_CodeCoverage_Report_Clover();
-    $writer->process($codeCoverage, 'coverage.xml');
+    $writer->process($codeCoverage, 'build/logs/clover.xml');
 
 });
