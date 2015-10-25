@@ -10,7 +10,7 @@ include_once('./vendor/autoload.php');
 
 // Command that starts the built-in web server
 $command = sprintf(
-    'php -S %s:%d -t %s %s >/dev/null 2>&1 & echo $!',
+    'php -S %s:%d -t %s %s > /dev/null 2>&1 & echo $!',
     WEB_SERVER_HOST,
     WEB_SERVER_PORT,
     WEB_SERVER_DOCROOT,
@@ -37,4 +37,26 @@ register_shutdown_function(function() use ($pid) {
 
     echo sprintf('%s - Killing process with ID %d', date('r'), $pid) . PHP_EOL;
     exec('kill ' . $pid);
+
+    /**
+     * @see http://stackoverflow.com/questions/10167775/aggregating-code-coverage-from-several-executions-of-phpunit
+     */
+    $arr_ser = glob("coverage*.obj");
+    foreach ($arr_ser as $filename) {
+        // @var PHP_CodeCoverage
+        $cov = unserialize(file_get_contents($filename));
+        if (isset($codeCoverage)) {
+            $codeCoverage->filter()->addFilesToWhitelist($cov->filter()->getWhitelist());
+            $codeCoverage->merge($cov);
+        } else {
+            $codeCoverage = $cov;
+        }
+        unlink($filename);
+    }
+
+    $writer = new PHP_CodeCoverage_Report_HTML(35, 70);
+    $writer->process($codeCoverage, 'coverage');
+    $writer = new PHP_CodeCoverage_Report_Clover();
+    $writer->process($codeCoverage, 'coverage.xml');
+
 });

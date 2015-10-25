@@ -1,21 +1,19 @@
 <?php
 /**
  *
- * @see http://stackoverflow.com/questions/19821082/collate-several-xdebug-coverage-results-into-one-report
+ * @see http://stackoverflow.com/questions/10167775/aggregating-code-coverage-from-several-executions-of-phpunit
  */
 
 // autoloader
 require_once './vendor/autoload.php';
 
-//get stored coverage obj
-$coverage = new PHP_CodeCoverage();
+//new coverage obj
+$ts = microtime(true);
+$coverage = new \PHP_CodeCoverage();
 $coverage->filter()->addDirectoryToWhitelist('./src/');
-$coverage->start("coverage");
+$coverage->start("coverage",true);
 
 require_once 'dispatch.php';
 
 $coverage->stop();
-$writer = new PHP_CodeCoverage_Report_HTML(35, 70);
-$writer->process($coverage, 'coverage');
-$writer = new PHP_CodeCoverage_Report_Clover();
-$writer->process($coverage, 'coverage.xml');
+file_put_contents("coverage".strval($ts).".obj",serialize($coverage));
