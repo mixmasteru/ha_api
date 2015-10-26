@@ -17,12 +17,6 @@ use Guzzle\Http\Client;
  */
 class TempTest extends BaseTest
 {
-
-    /**
-     * @var Client
-     */
-    protected $client;
-
     public function setUp()
     {
         parent::setUp();
@@ -35,6 +29,19 @@ class TempTest extends BaseTest
 
         $this->assertEquals(404, $response->getStatusCode(),"wrong response: ".$request->getResponse());
         $this->assertEquals('The server has not found anything matching the Request-URI', $response->getBody());
+    }
+
+    public function testGET500()
+    {
+        $request = $this->client->get('/temp/1/20151201100000/');
+        $response = $request->send();
+
+        $arr_err_part = array(  "exception" => 'ha\Exception\Parameter',
+                                "msg"       => 'no valid date: 20151201100000');
+
+        $this->assertEquals(500, $response->getStatusCode(),"wrong response: ".$request->getResponse());
+        $arr_resp = json_decode($response->getBody(true),true);
+        $this->assertArraySubset($arr_err_part,$arr_resp,"wrong exception name and msg not: ".$response->getBody());
     }
 
     public function testPUT()
