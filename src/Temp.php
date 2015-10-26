@@ -46,7 +46,8 @@ class Temp extends BaseResource
         $db = $this->getDB();
         $sql = "SELECT ts AS date, value AS temp FROM ".$this->table."
                 WHERE ts = :date
-                AND device_id = :device";
+                AND device_id = :device
+                LIMIT 1";
 
         $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $sth->execute(array(':device' => $device_id,
