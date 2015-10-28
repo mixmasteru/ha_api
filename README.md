@@ -4,4 +4,19 @@
 ![codecov.io](https://codecov.io/github/mixmasteru/ha_api/branch.svg?branch=master)
 # ha_api
 RESTful API for home automation
+store and read home automation data
+
+## endpoints
+* TBD
+
+## dependencies
+* php 5.6
+* mysql
+* [Tonic Framework](https://github.com/peej/tonic)
+
+## Installation
+* create mysql data
+* run init.sql from sql folder
+* enter credetials in web/dispatch.php
+* run composer install
 
