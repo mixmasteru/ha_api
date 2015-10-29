@@ -84,14 +84,58 @@ class Temp extends BaseResource
     protected function addTempToDb($device_id, \DateTime $date, $temp)
     {
         $db = $this->getDB();
-        $sql = "INSERT INTO ".$this->table." (id, device_id, value, ts)
+        $sql = "INSERT INTO ".$this->table." (id, device_id, value, ts)va
                 VALUES (NULL, :device_id, :temp, :date);";
         $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $sth->execute(array(':device_id' => $device_id,
-                            ':temp' => $temp,
+            ':temp' => $temp,
+            ':date' => $date->format("Y-m-d h:i:s")));
+
+        $this->checkForError($sth);
+    }
+
+    /**
+     * @method delete
+     *
+     * @param $device
+     * @param \DateTime $date
+     * @return string
+     * @throws Exception\Parameter
+     * @throws NotFoundException
+     */
+    function remove($device, $date)
+    {
+        $date = $this->validator->checkDate($date);
+        $cnt = $this->deleteTempFromDb($device,$date);
+
+        if($cnt !== 0) {
+            return json_encode(array("deleted" => $cnt));
+        }else{
+            throw new NotFoundException();
+        }
+    }
+
+    /**
+     * deletes data for device and date
+     *
+     * @param $device_id
+     * @param \DateTime $date
+     * @return int
+     * @throws DatabaseException
+     * @throws Exception\SQL
+     */
+    protected function deleteTempFromDb($device_id, \DateTime $date)
+    {
+        $db = $this->getDB();
+        $sql = "DELETE FROM ".$this->table."
+                WHERE ts = :date
+                AND device_id = :device;";
+        $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $sth->execute(array(':device_id' => $device_id,
                             ':date' => $date->format("Y-m-d h:i:s")));
 
         $this->checkForError($sth);
+        return $sth->rowCount();
     }
 
 }
