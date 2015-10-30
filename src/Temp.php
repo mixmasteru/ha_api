@@ -84,12 +84,12 @@ class Temp extends BaseResource
     protected function addTempToDb($device_id, \DateTime $date, $temp)
     {
         $db = $this->getDB();
-        $sql = "INSERT INTO ".$this->table." (id, device_id, value, ts)va
+        $sql = "INSERT INTO ".$this->table." (id, device_id, value, ts)
                 VALUES (NULL, :device_id, :temp, :date);";
         $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $sth->execute(array(':device_id' => $device_id,
-            ':temp' => $temp,
-            ':date' => $date->format("Y-m-d h:i:s")));
+                             ':temp' => $temp,
+                            ':date' => $date->format("Y-m-d h:i:s")));
 
         $this->checkForError($sth);
     }
@@ -129,7 +129,8 @@ class Temp extends BaseResource
         $db = $this->getDB();
         $sql = "DELETE FROM ".$this->table."
                 WHERE ts = :date
-                AND device_id = :device;";
+                AND device_id = :device_id;";
+
         $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $sth->execute(array(':device_id' => $device_id,
                             ':date' => $date->format("Y-m-d h:i:s")));

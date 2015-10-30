@@ -59,4 +59,20 @@ class TempTest extends BaseTest
         $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
         $this->assertEquals($json, $response->getBody(true));
     }
+
+    public function testDELETE200()
+    {
+        $ts     = "20151203-120000";
+        $temp   = 1.0;
+        $json   = '{"deleted":1}';
+
+        $request = $this->client->put('/temp/1/'.$ts.'/'.$temp.'/');
+        $response = $request->send();
+        $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
+
+        $request = $this->client->delete('/temp/1/'.$ts.'/');
+        $response = $request->send();
+        $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
+        $this->assertEquals($json, $response->getBody(true));
+    }
 }
