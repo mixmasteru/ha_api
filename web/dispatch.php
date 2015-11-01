@@ -1,6 +1,7 @@
 <?php
-// autoloader
+// base folder
 $base = __DIR__ . '/../';
+// autoloader
 require_once $base.'/vendor/autoload.php';
 
 use ha\Exception\Base as BaseException;
@@ -19,11 +20,16 @@ $container['db_config'] = array(
     'password' => '#dbpwd#'
 );
 
-$request = new Tonic\Request(array(
-    'mimetypes' => array(
-        'hal' => 'application/hal+json'
-    )
-));
+//mime types
+$arr_options = array('mimetypes' => array('hal' => 'application/hal+json'));
+
+//routing on live
+if(!empty($_SERVER['QUERY_STRING']))
+{
+    $arr_options['uri'] = '/'.$_SERVER['QUERY_STRING'];
+}
+
+$request = new Tonic\Request($arr_options);
 
 try {
     $resource = $app->getResource($request);
