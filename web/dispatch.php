@@ -1,11 +1,12 @@
 <?php
 // autoloader
-require_once './vendor/autoload.php';
+$base = __DIR__ . '/../';
+require_once $base.'/vendor/autoload.php';
 
 use ha\Exception\Base as BaseException;
 
 $config = array(
-    'load' => array('./src/*.php') // load resources
+    'load' => array($base.'/src/*.php') // load resources
 );
 
 $app = new Tonic\Application($config);
