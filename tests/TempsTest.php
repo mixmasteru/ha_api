@@ -20,16 +20,16 @@ class TempsTest extends BaseTest
 
     public function testGET200()
     {
-        $ts1     = "20151201-110000";
-        $ts2     = "20151201-120000";
-        $temp   = 1.0;
-        $json   = '[{"date":"2015-12-01 11:00:00","temp":"1"},{"date":"2015-12-01 12:00:00","temp":"1"}]';
+        $datetime1  = "20151201-110000";
+        $datetime2  = "20151201-120000";
+        $temp       = 1.0;
+        $json       = '[{"date":"2015-12-01 11:00:00","temp":"1"},{"date":"2015-12-01 12:00:00","temp":"1"}]';
 
-        $request = $this->client->put('/temp/2/'.$ts1.'/'.$temp.'/');
+        $request = $this->client->put('/temp/2/'.$datetime1.'/'.$temp.'/');
         $response = $request->send();
         $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
 
-        $request = $this->client->put('/temp/2/'.$ts2.'/'.$temp.'/');
+        $request = $this->client->put('/temp/2/'.$datetime2.'/'.$temp.'/');
         $response = $request->send();
         $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
 

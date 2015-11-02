@@ -46,15 +46,15 @@ class TempTest extends BaseTest
 
     public function testPUT()
     {
-        $ts     = "20151203-110000";
-        $temp   = 1.0;
-        $json   = '[{"date":"2015-12-03 11:00:00","temp":"1"}]';
+        $datetime   = "20151203-111100";
+        $temp       = 1.0;
+        $json       = '[{"date":"2015-12-03 11:11:00","temp":"1"}]';
 
-        $request = $this->client->put('/temp/1/'.$ts.'/'.$temp.'/');
+        $request = $this->client->put('/temp/1/'.$datetime.'/'.$temp.'/');
         $response = $request->send();
         $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
 
-        $request = $this->client->get('/temp/1/'.$ts.'/');
+        $request = $this->client->get('/temp/1/'.$datetime.'/');
         $response = $request->send();
         $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
         $this->assertEquals($json, $response->getBody(true));
@@ -62,15 +62,15 @@ class TempTest extends BaseTest
 
     public function testDELETE200()
     {
-        $ts     = "20151203-120000";
-        $temp   = 1.0;
-        $json   = '{"deleted":1}';
+        $datetime   = "20151203-120000";
+        $temp       = 1.0;
+        $json       = '{"deleted":1}';
 
-        $request = $this->client->put('/temp/1/'.$ts.'/'.$temp.'/');
+        $request = $this->client->put('/temp/1/'.$datetime.'/'.$temp.'/');
         $response = $request->send();
         $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
 
-        $request = $this->client->delete('/temp/1/'.$ts.'/');
+        $request = $this->client->delete('/temp/1/'.$datetime.'/');
         $response = $request->send();
         $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
         $this->assertEquals($json, $response->getBody(true));
