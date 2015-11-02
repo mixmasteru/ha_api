@@ -26,7 +26,11 @@ $arr_options = array('mimetypes' => array('hal' => 'application/hal+json'));
 //routing on live
 if(!empty($_SERVER['QUERY_STRING']))
 {
-    $arr_options['uri'] = '/'.$_SERVER['QUERY_STRING'];
+    $uri = '/'.$_SERVER['QUERY_STRING'];
+    $uri = explode("/",$uri);
+    array_pop($uri);
+    $uri = implode("/",$uri).'/';
+    $arr_options['uri'] = $uri;
 }
 
 $request = new Tonic\Request($arr_options);
