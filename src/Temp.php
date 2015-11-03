@@ -51,7 +51,7 @@ class Temp extends BaseResource
 
         $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $sth->execute(array(':device' => $device_id,
-                            ':date'     => $date->format("Y-m-d h:i:s"))
+                            ':date'     => $date->format(self::DATEFORMAT))
                             );
         $this->checkForError($sth);
         $result = $sth->fetchAll(PDO::FETCH_ASSOC);

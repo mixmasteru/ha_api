@@ -24,3 +24,12 @@ CREATE TABLE IF NOT EXISTS `temperature` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+
+CREATE TABLE `humidity` (
+  `id` int( 10 ) unsigned NOT NULL AUTO_INCREMENT ,
+  `device_id` tinyint( 3 ) unsigned NOT NULL ,
+  `value` float NOT NULL ,
+  `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+  PRIMARY KEY ( `id` ) ,
+  UNIQUE KEY `id` ( `id` )
+) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_bin;

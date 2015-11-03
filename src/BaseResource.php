@@ -15,7 +15,9 @@ use Tonic\Resource;
  */
 class BaseResource extends Resource
 {
-    /**
+    const DATEFORMAT = "Y-m-d H:i:s";
+
+	/**
      * @var Pimple
      */
     public $container;

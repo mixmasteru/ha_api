@@ -46,9 +46,9 @@ class TempTest extends BaseTest
 
     public function testPUT()
     {
-        $datetime   = "20151203-111100";
+        $datetime   = "20151203-231100";
         $temp       = 1.0;
-        $json       = '[{"date":"2015-12-03 11:11:00","temp":"1"}]';
+        $json       = '[{"date":"2015-12-03 23:11:00","temp":"1"}]';
 
         $request = $this->client->put('/temp/1/'.$datetime.'/'.$temp.'/');
         $response = $request->send();
