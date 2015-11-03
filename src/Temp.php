@@ -72,7 +72,7 @@ class Temp extends BaseResource
     {
         $date = $this->validator->checkDate($date);
         $this->addTempToDb($device,$date,$temp);
-        return json_encode(array($date->format("Y-m-d h:i:s") => $temp));
+        return json_encode(array($date->format(self::DATEFORMAT) => $temp));
     }
 
     /**
@@ -89,7 +89,7 @@ class Temp extends BaseResource
         $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $sth->execute(array(':device_id' => $device_id,
                              ':temp' => $temp,
-                            ':date' => $date->format("Y-m-d h:i:s")));
+                            ':date' => $date->format(self::DATEFORMAT)));
 
         $this->checkForError($sth);
     }
@@ -133,7 +133,7 @@ class Temp extends BaseResource
 
         $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $sth->execute(array(':device_id' => $device_id,
-                            ':date' => $date->format("Y-m-d h:i:s")));
+                            ':date' => $date->format(self::DATEFORMAT)));
 
         $this->checkForError($sth);
         return $sth->rowCount();
