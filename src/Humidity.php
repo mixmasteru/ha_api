@@ -9,7 +9,7 @@ use Tonic\NotFoundException;
  * @package ha
  *
  *  @uri /humi/:device/:date/
- *  @uri /humi/:device/:date/:humi/
+ *  @uri /humi/:device/:date/:humidity/
  */
 class Humidity extends BaseResource
 {
@@ -62,5 +62,41 @@ class Humidity extends BaseResource
         $this->checkForError($sth);
         $result = $sth->fetchAll(PDO::FETCH_ASSOC);
         return $result;
+    }
+
+    /**
+     * @method put
+     *
+     * @param int $device
+     * @param string $date
+     * @param float $humidity
+     * @return string
+     * @throws DatabaseException
+     * @throws Exception\Parameter
+     */
+    function save($device, $date, $humidity)
+    {
+        $date = $this->validator->checkDate($date);
+        $this->addHumiToDb($device,$date,$humidity);
+        return json_encode(array($date->format(self::DATEFORMAT) => $humidity));
+    }
+
+    /**
+     * @param $device_id
+     * @param \DateTime $date
+     * @param $humidity
+     * @throws DatabaseException
+     */
+    protected function addHumiToDb($device_id, \DateTime $date, $humidity)
+    {
+        $db = $this->getDB();
+        $sql = "INSERT INTO ".$this->table." (id, device_id, value, ts)
+                VALUES (NULL, :device_id, :humidity, :date);";
+        $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $sth->execute(array(':device_id' => $device_id,
+                            ':humidity' => $humidity,
+                            ':date' => $date->format(self::DATEFORMAT)));
+
+        $this->checkForError($sth);
     }
 }
