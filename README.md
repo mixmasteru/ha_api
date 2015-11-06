@@ -7,7 +7,9 @@ RESTful API for home automation
 store and read home automation data
 
 ## endpoints
-* TBD
+* temperatur
+* humidity (WIP)
+* power consumtion (TBD)
 
 ## dependencies
 * php 5.6
@@ -20,3 +22,8 @@ store and read home automation data
 * enter credetials in web/dispatch.php
 * run composer install
 
+## To Do
+* deployment automation
+* non http testing (with coverage merge)
+* device endpoint
+* env based config
