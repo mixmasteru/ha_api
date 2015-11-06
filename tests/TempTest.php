@@ -74,5 +74,9 @@ class TempTest extends BaseTest
         $response = $request->send();
         $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
         $this->assertEquals($json, $response->getBody(true));
+
+        $request = $this->client->delete('/temp/1/'.$datetime.'/');
+        $this->assertEquals(404, $response->getStatusCode(),"wrong response: ".$request->getResponse());
+        $this->assertEquals('The server has not found anything matching the Request-URI', $response->getBody());
     }
 }
