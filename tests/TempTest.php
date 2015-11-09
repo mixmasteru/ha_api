@@ -51,8 +51,10 @@ class TempTest extends BaseTest
 
         $request = $this->client->put('/temp/1/'.$datetime.'/'.$temp.'/');
         $response = $request->send();
+        $arr_exception = json_decode($response->getBody(true),true);
+
         $this->assertEquals(500, $response->getStatusCode(),"wrong error response code: ".$request->getResponse());
-        $this->assertEquals('wrong type of parameter: temp - must be float', $response->getBody());
+        $this->assertEquals("wrong type of parameter: 'temp' must be float", $arr_exception['msg']);
     }
 
     public function testPUT()

@@ -59,7 +59,7 @@ class Validator
 
         if($parameter === false)
         {
-            $msg = "wrong type of parameter: ".$name." must be ".$this->arr_types[$type_id];
+            $msg = "wrong type of parameter: '".$name."' must be ".$this->arr_types[$type_id];
             throw new ParameterException($msg);
         }
 
