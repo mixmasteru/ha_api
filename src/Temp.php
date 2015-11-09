@@ -61,6 +61,7 @@ class Temp extends BaseResource
     /**
      * @method put
      *
+     * @todo move $temp from uri to body
      * @param int $device
      * @param string $date
      * @param float $temp
@@ -71,6 +72,8 @@ class Temp extends BaseResource
     function save($device, $date, $temp)
     {
         $date = $this->validator->checkDate($date);
+        $temp = $this->validator->checkParam($temp,"temp",FILTER_VALIDATE_FLOAT);
+
         $this->addTempToDb($device,$date,$temp);
         return json_encode(array($date->format(self::DATEFORMAT) => $temp));
     }

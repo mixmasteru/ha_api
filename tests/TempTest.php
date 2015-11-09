@@ -44,6 +44,17 @@ class TempTest extends BaseTest
         $this->assertArraySubset($arr_err_part,$arr_resp,"wrong exception name and msg not: ".$response->getBody());
     }
 
+    public function testGET500paramtype()
+    {
+        $datetime   = "20151203-231200";
+        $temp       = "s";
+
+        $request = $this->client->put('/temp/1/'.$datetime.'/'.$temp.'/');
+        $response = $request->send();
+        $this->assertEquals(500, $response->getStatusCode(),"wrong error response code: ".$request->getResponse());
+        $this->assertEquals('wrong type of parameter: temp - must be float', $response->getBody());
+    }
+
     public function testPUT()
     {
         $datetime   = "20151203-231100";
