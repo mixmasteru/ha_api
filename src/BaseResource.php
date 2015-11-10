@@ -3,8 +3,6 @@ namespace ha;
 
 use ha\Exception\Database as DatabaseException;
 use ha\Exception\SQL as SQLException;
-use Tonic\Application;
-use Tonic\Request;
 use Tonic\Resource;
 
 /**
@@ -15,12 +13,18 @@ use Tonic\Resource;
  */
 class BaseResource extends Resource
 {
-    const DATEFORMAT = "Y-m-d H:i:s";
+	/**
+	 * table name
+	 * @var string
+	 */
+	protected $table = "";
+
+	const DATEFORMAT = "Y-m-d H:i:s";
 
 	/**
-     * @var Pimple
-     */
-    public $container;
+	 * @var Pimple
+	 */
+	public $container;
 
 	/**
 	 * @var Validator
@@ -37,17 +41,16 @@ class BaseResource extends Resource
 	 * @return \PDO
 	 * @throws DatabaseException
 	 */
-    protected function getDB()
-    {
-    	$dsn = $this->container['db_config']['dsn'];
+	protected function getDB()
+	{
+		$dsn = $this->container['db_config']['dsn'];
 
-    	try
-		{
+		try {
 			return new \PDO($dsn, $this->container['db_config']['username'], $this->container['db_config']['password']);
-    	} catch (\Exception $e) {
-    		throw new DatabaseException("db error:".$e->getMessage(), 0, $e);
-    	}
-    }
+		} catch (\Exception $e) {
+			throw new DatabaseException("db error:" . $e->getMessage(), 0, $e);
+		}
+	}
 
 	/**
 	 * @param \PDOStatement $statement
@@ -55,10 +58,34 @@ class BaseResource extends Resource
 	 */
 	protected function checkForError(\PDOStatement $statement)
 	{
-		if($statement->errorCode() !== '00000')
-		{
+		if ($statement->errorCode() !== '00000') {
 			$arr_error = $statement->errorInfo();
-			throw new SQLException($arr_error[2],$statement->errorCode());
+			throw new SQLException($arr_error[2], $statement->errorCode());
 		}
+	}
+
+	/**
+	 * deletes entry from this->table with
+	 * given device & datetime
+	 *
+	 * @param $device_id
+	 * @param \DateTime $date
+	 * @return int count of deleted rows
+	 * @throws DatabaseException
+	 * @throws SQLException
+	 */
+	protected function deleteValue($device_id, \DateTime $date)
+	{
+		$db = $this->getDB();
+		$sql = "DELETE FROM ".$this->table."
+                WHERE ts = :date
+                AND device_id = :device_id;";
+
+		$sth = $db->prepare($sql, array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+		$sth->execute(array(':device_id' => $device_id,
+							':date' => $date->format(self::DATEFORMAT)));
+
+		$this->checkForError($sth);
+		return $sth->rowCount();
 	}
 }

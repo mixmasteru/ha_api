@@ -37,4 +37,25 @@ class HumidityTests extends BaseTest
         $this->assertEquals(200, $response->getStatusCode(),"wrong response code, not 200: ".$request->getResponse());
         $this->assertEquals($json, $response->getBody(true));
     }
+
+    public function testDELETE200()
+    {
+        $datetime   = "20151212-121212";
+        $humidity   = 20.0;
+        $json       = '{"deleted":1}';
+
+        $request = $this->client->put('/humi/1/'.$datetime.'/'.$humidity.'/');
+        $response = $request->send();
+        $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
+
+        $request = $this->client->delete('/humi/1/'.$datetime.'/');
+        $response = $request->send();
+        $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
+        $this->assertEquals($json, $response->getBody(true));
+
+        //delete again -> nothing to delete
+        $response = $request->send();
+        $this->assertEquals(404, $response->getStatusCode(),"wrong response: ".$request->getResponse());
+        $this->assertEquals('The server has not found anything matching the Request-URI', $response->getBody());
+    }
 }

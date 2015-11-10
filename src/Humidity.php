@@ -99,4 +99,26 @@ class Humidity extends BaseResource
 
         $this->checkForError($sth);
     }
+
+    /**
+     * @method delete
+     *
+     * @param $device
+     * @param $date
+     * @return string
+     * @throws Exception\Parameter
+     * @throws NotFoundException
+     */
+    function delete($device, $date)
+    {
+        $date = $this->validator->checkDate($date);
+        $device = $this->validator->checkParam($device,"device id",FILTER_VALIDATE_INT);
+        $cnt = $this->deleteValue($device, $date);
+        if($cnt !== 0) {
+            return json_encode(array("deleted" => $cnt));
+        }else{
+            throw new NotFoundException();
+        }
+    }
+
 }
