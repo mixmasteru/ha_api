@@ -5,8 +5,8 @@ use PDO;
 use Tonic\NotFoundException;
 
 /**
- *  @uri /temp/:device/:date/
- *  @uri /temp/:device/:date/:temp/
+ *  @uri /temp/(\d)/:date/
+ *  @uri /temp/(\d)/:date/:temp/
  */
 class Temp extends BaseResource
 {
@@ -24,7 +24,6 @@ class Temp extends BaseResource
      */
     function read($device, $date)
     {
-        $device = $this->validator->checkParam($device,'device', FILTER_VALIDATE_INT);
         $date = $this->validator->checkDate($date);
         $arr_data = $this->readTempFromDb($device, $date);
 
@@ -91,7 +90,7 @@ class Temp extends BaseResource
                 VALUES (NULL, :device_id, :temp, :date);";
         $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $sth->execute(array(':device_id' => $device_id,
-                             ':temp' => $temp,
+                            ':temp' => $temp,
                             ':date' => $date->format(self::DATEFORMAT)));
 
         $this->checkForError($sth);
@@ -109,37 +108,13 @@ class Temp extends BaseResource
     function remove($device, $date)
     {
         $date = $this->validator->checkDate($date);
-        $cnt = $this->deleteTempFromDb($device,$date);
+        $cnt = $this->deleteValue($device,$date);
 
         if($cnt !== 0) {
             return json_encode(array("deleted" => $cnt));
         }else{
             throw new NotFoundException();
         }
-    }
-
-    /**
-     * deletes data for device and date
-     *
-     * @param $device_id
-     * @param \DateTime $date
-     * @return int
-     * @throws DatabaseException
-     * @throws Exception\SQL
-     */
-    protected function deleteTempFromDb($device_id, \DateTime $date)
-    {
-        $db = $this->getDB();
-        $sql = "DELETE FROM ".$this->table."
-                WHERE ts = :date
-                AND device_id = :device_id;";
-
-        $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        $sth->execute(array(':device_id' => $device_id,
-                            ':date' => $date->format(self::DATEFORMAT)));
-
-        $this->checkForError($sth);
-        return $sth->rowCount();
     }
 
 }
