@@ -24,7 +24,7 @@ $container['db_config'] = array(
 $arr_options = array('mimetypes' => array('hal' => 'application/hal+json'));
 
 //routing on live
-if(!empty($_SERVER['QUERY_STRING']))
+if(isset($_SERVER['QUERY_STRING']))
 {
     $uri = '/'.$_SERVER['QUERY_STRING'];
     $uri = explode("/",$uri);
