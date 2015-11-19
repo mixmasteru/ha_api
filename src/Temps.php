@@ -46,6 +46,7 @@ class Temps extends BaseResource
 		$db = $this->getDB();
 		$sql = "SELECT ts AS date, value AS temp FROM " . $this->table . "
                 WHERE  device_id = :device_id
+                ORDER BY date DESC
                 LIMIT :offset, :limit";
 
 		$sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));

@@ -11,5 +11,5 @@ class OverviewTest extends BaseTest
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertNotEmpty($response->getBody(),"empty body ");
-    }
+    } 
 }
