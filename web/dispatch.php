@@ -1,6 +1,8 @@
 <?php
 // base folder
 $base = __DIR__ . '/../';
+define('BASE',$base);
+
 // autoloader
 require_once $base.'/vendor/autoload.php';
 
