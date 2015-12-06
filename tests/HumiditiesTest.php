@@ -28,11 +28,11 @@ class HumiditiesTest extends BaseTest
         $humi       = 20.0;
         $json       = '[{"date":"2015-12-11 12:00:00","humidity":"1"},{"date":"2015-12-10 11:00:00","humidity":"1"}]';
 
-        $request = $this->client->put('/humis/2/'.$datetime1.'/'.$humi.'/');
+        $request = $this->client->put('/humi/2/'.$datetime1.'/'.$humi.'/');
         $response = $request->send();
         $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
 
-        $request = $this->client->put('/humis/2/'.$datetime2.'/'.$humi.'/');
+        $request = $this->client->put('/humi/2/'.$datetime2.'/'.$humi.'/');
         $response = $request->send();
         $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
 
