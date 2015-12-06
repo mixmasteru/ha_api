@@ -26,7 +26,7 @@ class HumiditiesTest extends BaseTest
         $datetime1  = "20151210-110000";
         $datetime2  = "20151211-120000";
         $humi       = 20.0;
-        $json       = '[{"date":"2015-12-11 12:00:00","humidity":"1"},{"date":"2015-12-10 11:00:00","humidity":"1"}]';
+        $json       = '[{"date":"2015-12-11 12:00:00","humidity":"20"},{"date":"2015-12-10 11:00:00","humidity":"20"}]';
 
         $request = $this->client->put('/humi/2/'.$datetime1.'/'.$humi.'/');
         $response = $request->send();
