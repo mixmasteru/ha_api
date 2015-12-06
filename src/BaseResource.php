@@ -3,6 +3,7 @@ namespace ha;
 
 use ha\Exception\Database as DatabaseException;
 use ha\Exception\SQL as SQLException;
+use PDO;
 use Tonic\Resource;
 
 /**
@@ -11,7 +12,7 @@ use Tonic\Resource;
  * Date: 07.10.15
  * Time: 19:51
  */
-class BaseResource extends Resource
+abstract class BaseResource extends Resource
 {
 	/**
 	 * table name
@@ -87,5 +88,36 @@ class BaseResource extends Resource
 
 		$this->checkForError($sth);
 		return $sth->rowCount();
+	}
+
+	/**
+	 * generic select of values in table
+	 *
+	 * @param string $table table name
+	 * @param string $name value name
+	 * @param int $device_id
+	 * @param int $offset
+	 * @param int $limit
+	 * @return array
+	 * @throws DatabaseException
+	 * @throws Exception\Database
+	 */
+	protected function readValuesFromDb($table, $name, $device_id, $offset, $limit)
+	{
+		$db = $this->getDB();
+		$sql = "SELECT ts AS date, value AS ".$name." FROM " . $table . "
+                WHERE  device_id = :device_id
+                ORDER BY date DESC
+                LIMIT :offset, :limit";
+
+		$sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+		$sth->bindValue(':device_id', $device_id);
+		$sth->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+		$sth->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+		$sth->execute();
+		$this->checkForError($sth);
+
+		$result = $sth->fetchAll(PDO::FETCH_ASSOC);
+		return $result;
 	}
 }

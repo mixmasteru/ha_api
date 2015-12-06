@@ -24,7 +24,7 @@ class Temps extends BaseResource
 	 */
 	function read($device, $offset, $limit)
 	{
-		$arr_data = $this->readTempsFromDb($device, $offset, $limit);
+		$arr_data = $this->readTemps($device, $offset, $limit);
 
 		if(!empty($arr_data)) {
 			return json_encode($arr_data);
@@ -41,22 +41,8 @@ class Temps extends BaseResource
 	 * @throws DatabaseException
 	 * @throws Exception\Database
 	 */
-	protected function readTempsFromDb($device_id, $offset, $limit)
+	protected function readTemps($device_id, $offset, $limit)
 	{
-		$db = $this->getDB();
-		$sql = "SELECT ts AS date, value AS temp FROM " . $this->table . "
-                WHERE  device_id = :device_id
-                ORDER BY date DESC
-                LIMIT :offset, :limit";
-
-		$sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-		$sth->bindValue(':device_id', $device_id);
-		$sth->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
-		$sth->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
-		$sth->execute();
-		$this->checkForError($sth);
-
-		$result = $sth->fetchAll(PDO::FETCH_ASSOC);
-		return $result;
+		return $this->readValuesFromDb($this->table,"temp",$device_id,$offset,$limit);
 	}
 }
