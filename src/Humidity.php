@@ -41,6 +41,8 @@ class Humidity extends BaseResource
     }
 
     /**
+     * select on humidity table
+     *
      * @param int $device_id
      * @param \DateTime $date
      * @return array
@@ -56,8 +58,7 @@ class Humidity extends BaseResource
 
         $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $sth->execute(array(':device'   => $device_id,
-                            ':date'     => $date->format(self::DATEFORMAT))
-        );
+                            ':date'     => $date->format(self::DATEFORMAT)));
 
         $this->checkForError($sth);
         $result = $sth->fetchAll(PDO::FETCH_ASSOC);
@@ -82,6 +83,8 @@ class Humidity extends BaseResource
     }
 
     /**
+     * insert in humidity table
+     *
      * @param $device_id
      * @param \DateTime $date
      * @param $humidity

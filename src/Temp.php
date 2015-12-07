@@ -35,6 +35,8 @@ class Temp extends BaseResource
     }
 
     /**
+     * select on temperature table
+     *
      * @param int $device_id
      * @param \DateTime $date
      * @return array
@@ -78,6 +80,8 @@ class Temp extends BaseResource
     }
 
     /**
+     * insert in temperature table
+     *
      * @param $device_id
      * @param \DateTime $date
      * @param $temp
