@@ -3,6 +3,7 @@ namespace ha;
 use ha\Exception\Database as DatabaseException;
 use PDO;
 use Tonic\NotFoundException;
+use Tonic\Response;
 
 /**
  * Class Humidity
@@ -80,7 +81,7 @@ class Humidity extends BaseResource
         $date = $this->validator->checkDate($date);
         $this->addHumiToDb($device,$date,$humidity);
 
-        $response =  new Response(Response::CREATED, json_encode(array($date->format(self::DATEFORMAT) => $humidity)));
+        $response = new Response(Response::CREATED, json_encode(array($date->format(self::DATEFORMAT) => $humidity)));
         return $response;
     }
 
