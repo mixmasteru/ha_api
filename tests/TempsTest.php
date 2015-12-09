@@ -27,11 +27,11 @@ class TempsTest extends BaseTest
 
         $request = $this->client->put('/temp/2/'.$datetime1.'/'.$temp.'/');
         $response = $request->send();
-        $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
+        $this->assertEquals(201, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
 
         $request = $this->client->put('/temp/2/'.$datetime2.'/'.$temp.'/');
         $response = $request->send();
-        $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
+        $this->assertEquals(201, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
 
         $request = $this->client->get('/temps/2/0/10/');
         $response = $request->send();

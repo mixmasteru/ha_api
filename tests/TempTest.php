@@ -65,7 +65,7 @@ class TempTest extends BaseTest
 
         $request = $this->client->put('/temp/1/'.$datetime.'/'.$temp.'/');
         $response = $request->send();
-        $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
+        $this->assertEquals(201, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
 
         $request = $this->client->get('/temp/1/'.$datetime.'/');
         $response = $request->send();
@@ -81,7 +81,7 @@ class TempTest extends BaseTest
 
         $request = $this->client->put('/temp/1/'.$datetime.'/'.$temp.'/');
         $response = $request->send();
-        $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
+        $this->assertEquals(201, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
 
         $request = $this->client->delete('/temp/1/'.$datetime.'/');
         $response = $request->send();

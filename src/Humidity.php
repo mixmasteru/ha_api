@@ -79,7 +79,9 @@ class Humidity extends BaseResource
     {
         $date = $this->validator->checkDate($date);
         $this->addHumiToDb($device,$date,$humidity);
-        return json_encode(array($date->format(self::DATEFORMAT) => $humidity));
+
+        $response =  new Response(Response::CREATED, json_encode(array($date->format(self::DATEFORMAT) => $humidity)));
+        return $response;
     }
 
     /**

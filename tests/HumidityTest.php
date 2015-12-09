@@ -30,7 +30,7 @@ class HumidityTests extends BaseTest
 
         $request = $this->client->put('/humi/1/'.$datetime.'/'.$temp.'/');
         $response = $request->send();
-        $this->assertEquals(200, $response->getStatusCode(),"wrong response code, not 200: ".$request->getResponse());
+        $this->assertEquals(201, $response->getStatusCode(),"wrong response code, not 200: ".$request->getResponse());
 
         $request = $this->client->get('/humi/1/'.$datetime.'/');
         $response = $request->send();
@@ -46,7 +46,7 @@ class HumidityTests extends BaseTest
 
         $request = $this->client->put('/humi/1/'.$datetime.'/'.$humidity.'/');
         $response = $request->send();
-        $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
+        $this->assertEquals(201, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
 
         $request = $this->client->delete('/humi/1/'.$datetime.'/');
         $response = $request->send();

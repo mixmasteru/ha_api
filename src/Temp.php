@@ -3,6 +3,7 @@ namespace ha;
 use ha\Exception\Database as DatabaseException;
 use PDO;
 use Tonic\NotFoundException;
+use Tonic\Response;
 
 /**
  *  @uri /temp/(\d)/:date/
@@ -66,7 +67,8 @@ class Temp extends BaseResource
      * @param int $device
      * @param string $date
      * @param float $temp
-     * @return string
+     * @return Response
+     *
      * @throws DatabaseException
      * @throws Exception\Parameter
      */
@@ -76,7 +78,8 @@ class Temp extends BaseResource
         $temp = $this->validator->checkParam($temp,"temp",FILTER_VALIDATE_FLOAT);
 
         $this->addTempToDb($device,$date,$temp);
-        return json_encode(array($date->format(self::DATEFORMAT) => $temp));
+        $response =  new Response(Response::CREATED,json_encode(array($date->format(self::DATEFORMAT) => $temp)));
+        return $response;
     }
 
     /**
