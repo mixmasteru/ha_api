@@ -59,7 +59,7 @@ class ApiDb
         $sth->execute(array(':device_id' => $device_id,
                             ':date' => $date->format(ApiDb::DATEFORMAT)));
 
-        $this->apidb->checkForError($sth);
+        $this->checkForError($sth);
         return $sth->rowCount();
     }
 
@@ -87,7 +87,7 @@ class ApiDb
         $sth->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
         $sth->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
         $sth->execute();
-        $this->apidb->checkForError($sth);
+        $this->checkForError($sth);
 
         $result = $sth->fetchAll(PDO::FETCH_ASSOC);
         return $result;
