@@ -45,7 +45,7 @@ class Humidities extends BaseResource
      */
     protected function readHumidities($device_id, $offset, $limit)
     {
-        return $this->readValuesFromDb($this->table,"humidity",$device_id,$offset,$limit);
+        return $this->apidb->readValuesFromDb($this->table,"humidity",$device_id,$offset,$limit);
     }
 
 }

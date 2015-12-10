@@ -33,12 +33,7 @@ class Humidity extends BaseResource
         $date = $this->validator->checkDate($date);
 
         $arr_data = $this->readHumidityFromDb($device, $date);
-
-        if(!empty($arr_data)) {
-            return json_encode($arr_data);
-        }else{
-            throw new NotFoundException();
-        }
+        return $this->createResponse($arr_data);
     }
 
     /**
@@ -51,7 +46,7 @@ class Humidity extends BaseResource
      */
     protected function readHumidityFromDb($device_id, \DateTime $date)
     {
-        $db = $this->getDB();
+        $db = $this->apidb->getDb();
         $sql = "SELECT ts AS date, value AS humidity FROM ".$this->table."
                 WHERE ts = :date
                 AND device_id = :device
@@ -59,7 +54,7 @@ class Humidity extends BaseResource
 
         $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $sth->execute(array(':device'   => $device_id,
-                            ':date'     => $date->format(self::DATEFORMAT)));
+                            ':date'     => $date->format(ApiDb::DATEFORMAT)));
 
         $this->checkForError($sth);
         $result = $sth->fetchAll(PDO::FETCH_ASSOC);
@@ -81,7 +76,7 @@ class Humidity extends BaseResource
         $date = $this->validator->checkDate($date);
         $this->addHumiToDb($device,$date,$humidity);
 
-        $response = new Response(Response::CREATED, json_encode(array($date->format(self::DATEFORMAT) => $humidity)));
+        $response = new Response(Response::CREATED, json_encode(array($date->format(ApiDb::DATEFORMAT) => $humidity)));
         return $response;
     }
 
@@ -95,13 +90,13 @@ class Humidity extends BaseResource
      */
     protected function addHumiToDb($device_id, \DateTime $date, $humidity)
     {
-        $db = $this->getDB();
+        $db = $this->apidb->getDb();
         $sql = "INSERT INTO ".$this->table." (id, device_id, value, ts)
                 VALUES (NULL, :device_id, :humidity, :date);";
         $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $sth->execute(array(':device_id' => $device_id,
                             ':humidity' => $humidity,
-                            ':date' => $date->format(self::DATEFORMAT)));
+                            ':date' => $date->format(ApiDb::DATEFORMAT)));
 
         $this->checkForError($sth);
     }
@@ -119,7 +114,7 @@ class Humidity extends BaseResource
     {
         $date = $this->validator->checkDate($date);
         $device = $this->validator->checkParam($device,"device id",FILTER_VALIDATE_INT);
-        $cnt = $this->deleteValue($device, $date);
+        $cnt = $this->apidb->deleteValue($this->table, $device, $date);
         if($cnt !== 0) {
             return json_encode(array("deleted" => $cnt));
         }else{

@@ -45,7 +45,7 @@ class Temp extends BaseResource
      */
     protected function readTempFromDb($device_id, \DateTime $date)
     {
-        $db = $this->getDB();
+        $db = $this->apidb->getDb();
         $sql = "SELECT ts AS date, value AS temp FROM ".$this->table."
                 WHERE ts = :date
                 AND device_id = :device
@@ -53,9 +53,9 @@ class Temp extends BaseResource
 
         $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $sth->execute(array(':device' => $device_id,
-                            ':date'     => $date->format(self::DATEFORMAT))
+                            ':date'   => $date->format(ApiDb::DATEFORMAT))
                             );
-        $this->checkForError($sth);
+        $this->apidb->checkForError($sth);
         $result = $sth->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
@@ -78,7 +78,7 @@ class Temp extends BaseResource
         $temp = $this->validator->checkParam($temp,"temp",FILTER_VALIDATE_FLOAT);
 
         $this->addTempToDb($device,$date,$temp);
-        $response =  new Response(Response::CREATED,json_encode(array($date->format(self::DATEFORMAT) => $temp)));
+        $response =  new Response(Response::CREATED,json_encode(array($date->format(ApiDb::DATEFORMAT) => $temp)));
         return $response;
     }
 
@@ -92,13 +92,13 @@ class Temp extends BaseResource
      */
     protected function addTempToDb($device_id, \DateTime $date, $temp)
     {
-        $db = $this->getDB();
+        $db = $this->apidb->getDb();
         $sql = "INSERT INTO ".$this->table." (id, device_id, value, ts)
                 VALUES (NULL, :device_id, :temp, :date);";
         $sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $sth->execute(array(':device_id' => $device_id,
                             ':temp' => $temp,
-                            ':date' => $date->format(self::DATEFORMAT)));
+                            ':date' => $date->format(ApiDb::DATEFORMAT)));
 
         $this->checkForError($sth);
     }
@@ -115,7 +115,7 @@ class Temp extends BaseResource
     function remove($device, $date)
     {
         $date = $this->validator->checkDate($date);
-        $cnt = $this->deleteValue($device,$date);
+        $cnt = $this->apidb->deleteValue($this->table,$device,$date);
 
         if($cnt !== 0) {
             return json_encode(array("deleted" => $cnt));
