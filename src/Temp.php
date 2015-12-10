@@ -100,7 +100,7 @@ class Temp extends BaseResource
                             ':temp' => $temp,
                             ':date' => $date->format(ApiDb::DATEFORMAT)));
 
-        $this->checkForError($sth);
+        $this->apidb->checkForError($sth);
     }
 
     /**

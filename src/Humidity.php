@@ -56,7 +56,7 @@ class Humidity extends BaseResource
         $sth->execute(array(':device'   => $device_id,
                             ':date'     => $date->format(ApiDb::DATEFORMAT)));
 
-        $this->checkForError($sth);
+        $this->apidb->checkForError($sth);
         $result = $sth->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
@@ -98,7 +98,7 @@ class Humidity extends BaseResource
                             ':humidity' => $humidity,
                             ':date' => $date->format(ApiDb::DATEFORMAT)));
 
-        $this->checkForError($sth);
+        $this->apidb->checkForError($sth);
     }
 
     /**
