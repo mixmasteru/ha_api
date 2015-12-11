@@ -6,11 +6,15 @@ use ha\Exception\SQL as SQLException;
 use PDO;
 
 /**
- * Class ApiDb
+ * Database Class with helper functions
+ *
  * @package ha
  */
 class ApiDb
 {
+    /**
+     * mysql date format string
+     */
     const DATEFORMAT = "Y-m-d H:i:s";
 
     /**
@@ -27,6 +31,9 @@ class ApiDb
     }
 
     /**
+     * checks error code of statement and throws
+     * exception in case of a mysql error
+     *
      * @param \PDOStatement $statement
      * @throws SQLException
      */
