@@ -6,7 +6,7 @@
         "nocarrier/hal": "dev-master"
     },
     "require-dev": {
-        "guzzle/guzzle":"3.9",
+        "guzzlehttp/guzzle":"6.1.*",
         "phpunit/phpunit": "5.0.*",
         "phpunit/php-code-coverage": "^3",
         "satooshi/php-coveralls": "dev-master"

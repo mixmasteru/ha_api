@@ -1,6 +1,6 @@
 <?php
 namespace ha;
-use Guzzle\Service\Client;
+use GuzzleHttp\Client;
 
 /**
  * Class BaseTest
@@ -22,11 +22,8 @@ abstract class BaseTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
 
         // create our http client (Guzzle)
-        $this->client = new Client(self::TESTHOST, array(
-            'request.options' => array(
-                'exceptions' => false,
-            )
-        ));
+        $this->client = new Client(['base_uri' => self::TESTHOST,
+                                    'http_errors' => false]);
     }
 
 }
