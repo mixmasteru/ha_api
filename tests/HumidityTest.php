@@ -12,50 +12,54 @@ class HumidityTests extends BaseTest
         parent::setUp();
     }
 
+    /**
+     * @group humidity
+     */
     public function testGET404()
     {
         $datetime   = "20151201-231100";
-        $request = $this->client->get('/humi/1/'.$datetime.'/');
-        $response = $request->send();
+        $response   = $this->client->get('/humi/1/'.$datetime.'/');
 
-        $this->assertEquals(404, $response->getStatusCode(),"wrong response code, not 404: ".$request->getResponse());
-        $this->assertEquals('The server has not found anything matching the Request-URI', $response->getBody());
+        $this->assertEquals(404, $response->getStatusCode(),"wrong response code, not 404: ".$response->getStatusCode());
+        $this->assertEquals('The server has not found anything matching the Request-URI', $response->getBody()->getContents());
     }
 
+    /**
+     * @group humidity
+     */
     public function testPUTGET()
     {
         $datetime   = "20151204-231100";
         $temp       = 20.1;
         $json       = '[{"date":"2015-12-04 23:11:00","humidity":"20.1"}]';
 
-        $request = $this->client->put('/humi/1/'.$datetime.'/'.$temp.'/');
-        $response = $request->send();
-        $this->assertEquals(201, $response->getStatusCode(),"wrong response code, not 200: ".$request->getResponse());
+        $response = $this->client->put('/humi/1/'.$datetime.'/'.$temp.'/');
+        $this->assertEquals(201, $response->getStatusCode(),"wrong response code, not 200: ".$response->getStatusCode());
 
-        $request = $this->client->get('/humi/1/'.$datetime.'/');
-        $response = $request->send();
-        $this->assertEquals(200, $response->getStatusCode(),"wrong response code, not 200: ".$request->getResponse());
-        $this->assertEquals($json, $response->getBody(true));
+        $response = $this->client->get('/humi/1/'.$datetime.'/');
+        $this->assertEquals(200, $response->getStatusCode(),"wrong response code, not 200: ".$response->getStatusCode());
+        $this->assertEquals($json, $response->getBody()->getContents());
     }
 
+    /**
+     * @group humidity
+     */
     public function testDELETE200()
     {
         $datetime   = "20151212-121212";
         $humidity   = 20.0;
         $json       = '{"deleted":1}';
 
-        $request = $this->client->put('/humi/1/'.$datetime.'/'.$humidity.'/');
-        $response = $request->send();
-        $this->assertEquals(201, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
+        $response = $this->client->put('/humi/1/'.$datetime.'/'.$humidity.'/');
+        $this->assertEquals(201, $response->getStatusCode(),"wrong response code: ".$response->getStatusCode());
 
-        $request = $this->client->delete('/humi/1/'.$datetime.'/');
-        $response = $request->send();
-        $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$request->getResponse());
-        $this->assertEquals($json, $response->getBody(true));
+        $response = $this->client->delete('/humi/1/'.$datetime.'/');
+        $this->assertEquals(200, $response->getStatusCode(),"wrong response code: ".$response->getStatusCode());
+        $this->assertEquals($json, $response->getBody()->getContents());
 
         //delete again -> nothing to delete
-        $response = $request->send();
-        $this->assertEquals(404, $response->getStatusCode(),"wrong response: ".$request->getResponse());
-        $this->assertEquals('The server has not found anything matching the Request-URI', $response->getBody());
+        $response = $this->client->delete('/humi/1/'.$datetime.'/');
+        $this->assertEquals(404, $response->getStatusCode(),"wrong response: ".$response->getStatusCode());
+        $this->assertEquals('The server has not found anything matching the Request-URI', $response->getBody()->getContents());
     }
 }
