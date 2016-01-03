@@ -43,6 +43,6 @@ class Temps extends BaseResource
 	 */
 	protected function readTemps($device_id, $offset, $limit)
 	{
-		return $this->readValuesFromDb($this->table,"temp",$device_id,$offset,$limit);
+		return $this->apidb->readValuesFromDb($this->table,"temp",$device_id,$offset,$limit);
 	}
 }

@@ -2,9 +2,9 @@
 namespace ha;
 
 use ha\Exception\Database as DatabaseException;
-use ha\Exception\SQL as SQLException;
 use PDO;
 use Tonic\Resource;
+use Tonic\Response;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,8 +20,6 @@ abstract class BaseResource extends Resource
 	 */
 	protected $table = "";
 
-	const DATEFORMAT = "Y-m-d H:i:s";
-
 	/**
 	 * @var Pimple
 	 */
@@ -32,92 +30,49 @@ abstract class BaseResource extends Resource
 	 */
 	protected $validator;
 
+	/**
+	 * @var ApiDb
+	 */
+	protected $apidb;
+
 	protected function setup()
 	{
 		parent::setup();
 		$this->validator = new Validator();
+		$this->apidb = $this->initDB();
 	}
 
 	/**
 	 * @return \PDO
 	 * @throws DatabaseException
 	 */
-	protected function getDB()
+	protected function initDB()
 	{
 		$dsn = $this->container['db_config']['dsn'];
 
 		try {
-			return new \PDO($dsn, $this->container['db_config']['username'], $this->container['db_config']['password']);
+			$pdo = new \PDO($dsn, $this->container['db_config']['username'], $this->container['db_config']['password']);
+			$apidb = new ApiDb($pdo);
 		} catch (\Exception $e) {
 			throw new DatabaseException("db error:" . $e->getMessage(), 0, $e);
 		}
+
+		return $apidb;
 	}
 
 	/**
-	 * @param \PDOStatement $statement
-	 * @throws SQLException
+	 * returns OK Response if data is not empty or NOTFOUND if not
+	 *
+	 * @param $arr_data
+	 * @return Response
 	 */
-	protected function checkForError(\PDOStatement $statement)
-	{
-		if ($statement->errorCode() !== '00000') {
-			$arr_error = $statement->errorInfo();
-			throw new SQLException($arr_error[2], $statement->errorCode());
+	protected function createResponse($arr_data){
+		if(!empty($arr_data)) {
+			$response = new Response(Response::OK,json_encode($arr_data));
+			$response->contentType = 'application/json';
+		}else{
+			$response = new Response(Response::NOTFOUND,'The server has not found anything matching the Request-URI');
 		}
-	}
-
-	/**
-	 * deletes entry from this->table with
-	 * given device & datetime
-	 *
-	 * @param $device_id
-	 * @param \DateTime $date
-	 * @return int count of deleted rows
-	 * @throws DatabaseException
-	 * @throws SQLException
-	 */
-	protected function deleteValue($device_id, \DateTime $date)
-	{
-		$db = $this->getDB();
-		$sql = "DELETE FROM ".$this->table."
-                WHERE ts = :date
-                AND device_id = :device_id;";
-
-		$sth = $db->prepare($sql, array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
-		$sth->execute(array(':device_id' => $device_id,
-							':date' => $date->format(self::DATEFORMAT)));
-
-		$this->checkForError($sth);
-		return $sth->rowCount();
-	}
-
-	/**
-	 * generic select of values in table
-	 *
-	 * @param string $table table name
-	 * @param string $name value name
-	 * @param int $device_id
-	 * @param int $offset
-	 * @param int $limit
-	 * @return array
-	 * @throws DatabaseException
-	 * @throws Exception\Database
-	 */
-	protected function readValuesFromDb($table, $name, $device_id, $offset, $limit)
-	{
-		$db = $this->getDB();
-		$sql = "SELECT ts AS date, value AS ".$name." FROM " . $table . "
-                WHERE  device_id = :device_id
-                ORDER BY date DESC
-                LIMIT :offset, :limit";
-
-		$sth = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-		$sth->bindValue(':device_id', $device_id);
-		$sth->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
-		$sth->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
-		$sth->execute();
-		$this->checkForError($sth);
-
-		$result = $sth->fetchAll(PDO::FETCH_ASSOC);
-		return $result;
+		return $response;
 	}
 }

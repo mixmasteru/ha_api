@@ -8,7 +8,10 @@ use ha\Exception\Parameter as ParameterException;
  */
 class Validator
 {
-
+    /**
+     * array for information from filter_list
+     * @var array
+     */
     protected $arr_types;
 
     /**
